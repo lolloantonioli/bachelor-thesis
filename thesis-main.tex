@@ -4,24 +4,61 @@
 \usepackage{code-lstlistings}
 \usepackage{notes}
 \usepackage{shortcuts}
+\usepackage{booktabs} % Per \toprule, \midrule, \bottomrule
+\usepackage{tabularx} % Per tabelle flessibili che si adattano alla larghezza della pagina
 \usepackage{acronym}
 
 \school{\unibo}
-\programme{Corso di Laurea [Magistrale?] in Ingegneria e Scienze Informatiche}
-\title{Fancy Title}
-\author{Candidate Name}
+\programme{Corso di Laurea in Ingegneria e Scienze Informatiche}
+\title{Analisi dell'impiego di SOG e COG in algoritmi di clustering per reti marittime}
+\author{Lorenzo Antonioli}
 \date{\today}
-\subject{Supervisor's course name}
-\supervisor{Prof. Supervisor Here}
-\cosupervisor{Dott. CoSupervisor 1}
-\morecosupervisor{Dott. CoSupervisor 2}
+\subject{Programmazione ad Oggetti}
+\supervisor{Prof. Danilo Pianini}
+\cosupervisor{Dott. Martina Baiardi}
 \session{I}
-\academicyear{2022-2023}
+\academicyear{2025-2026}
 
 % Definition of acronyms
-\acrodef{IoT}{Internet of Thing}
-\acrodef{vm}[VM]{Virtual Machine}
-
+\acrodef{IoT}{Internet of Things}
+\acrodef{VHF}{Very High Frequency}
+\acrodef{SatCom}{Satellite Communications}
+\acrodef{VHF-GMDSS}{Very High Frequency-Global Maritime Distress and Safety System}
+\acrodef{AIS}{Automatic Identification System}
+\acrodef{LiDAR}{Light Detection and Ranging}
+\acrodef{LoRaWAN}{Long Range Wide Area Network}
+\acrodef{IMO}{International Maritime Organization}
+\acrodef{MMSI}{Maritime Mobile Service Identity}
+\acrodef{GPS}{Global Positioning System}
+\acrodef{VTS}{Vessel Traffic Service}
+\acrodef{AIS-sat}{Satellite AIS}
+\acrodef{ROT}{Rate of Turn}
+\acrodef{SOG}{Speed Over Ground}
+\acrodef{COG}{Course Over Ground}
+\acrodef{RAIM}{Receiver Autonomous Integrity Monitoring}
+\acrodef{UTC}{Coordinated Universal Time}
+\acrodef{SOLAS}{Safety Of Life At Sea}
+\acrodef{GT}{Gross Tonnage}
+\acrodef{CPA}{Closest Point of Approach}
+\acrodef{SAR}{Search and Rescue}
+\acrodef{MOB}{Man OverBoard}
+\acrodef{AIS-SART}{AIS-Search and Rescue Transponder}
+\acrodef{AtoN}{Aids to Navigation}
+\acrodef{MASS}{Maritime Autonomous Surface Ships}
+\acrodef{RaDAR}{RAdio Detection And Ranging}
+\acrodef{S2V}{Ship to Vessel}
+\acrodef{S2S}{Ship to Shore}
+\acrodef{AP}{Aggregate Programming}
+\acrodef{FC}{Field Calculus}
+\acrodef{SCR}{Self-organising Coordination Regions}
+\acrodef{DSL}{Domain Specific Languages}
+\acrodef{MS}[M\&S]{Modeling \& Simulation}
+\acrodef{GPX}{GPS eXchange Format}
+\acrodef{APRS}{Automatic Packet Reporting System}
+\acrodef{Dist-MR}{Distance-based Multi-Relay Communication}
+\acrodef{DR-MR}{Data Rate-based Multi-Relay Communication}
+\acrodef{MST}{Minimum Spanning Tree}
+\acrodef{CSC}{Collective Summarisation Clusters}
 
 \mainlinespacing{1.241} % line spacing in mainmatter, comment to default (1)
 
@@ -37,69 +74,27 @@ Max 2000 characters, strict.
 Optional. Max a few lines.
 \end{dedication}
 
-%----------------------------------------------------------------------------------------
 \tableofcontents   
-\listoffigures     % (optional) comment if empty
-\lstlistoflistings % (optional) comment if empty
-%----------------------------------------------------------------------------------------
 
 \mainmatter
 
-%----------------------------------------------------------------------------------------
-\chapter{Introduction}
-\label{chap:introduction}
-%----------------------------------------------------------------------------------------
+\include{chapters/introduzione}
+\include{chapters/background}
+\include{chapters/analisi}
+\include{chapters/designImplementazione}
+\include{chapters/valutazioni}
+\include{chapters/conclusioni}
 
-Write your intro here.
-\sidenote{Add sidenotes in this way. They are named after the author of the thesis}
-
-You can use acronyms that your defined previously,
-such as \ac{IoT}.
-%
-If you use acronyms twice,
-they will be written in full only once
-(indeed, you can mention the \ac{IoT} now without it being fully explained).
-%
-In some cases, you may need a plural form of the acronym.
-%
-For instance,
-that you are discussing \acp{vm},
-you may need both \ac{vm} and \acp{vm}.
-
-\paragraph{Structure of the Thesis}
-
-\note{At the end, describe the structure of the paper}
-
-\chapter{State of the art}
-
-I suggest referencing stuff as follows: \cref{fig:random-image} or \Cref{fig:random-image}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=.8\linewidth]{figures/random-image.pdf}
-    \caption{Some random image}
-    \label{fig:random-image}
-\end{figure}
-
-\section{Some cool topic}
-
-\chapter{Contribution}
-
-You may also put some code snippet (which is NOT float by default), eg: \cref{lst:random-code}.
-
-\lstinputlisting[float,language=Java,label={lst:random-code}]{listings/HelloWorld.java}
-
-\section{Fancy formulas here}
-
+\listoffigures
+\lstlistoflistings
 %----------------------------------------------------------------------------------------
 % BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
 
 \backmatter
 
-\nocite{*} % Remove this as soon as you have the first citation
-
 \bibliographystyle{alpha}
+
 \bibliography{bibliography}
 
 \begin{acknowledgements} % this is optional
