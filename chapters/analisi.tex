@@ -4,7 +4,7 @@
 \section{Limiti dell'algoritmo esistente}
 \label{sec:limiti_algoritmo_esistente}
 
-L'algoritmo analizzato nel capitolo precedente (\cref{sec:algoritmo_precedente}) organizza le navi in cluster valutandone principalmente la posizione e il canale di comunicazione con il leader del cluster. In particolare, vengono utilizzati la longitudine e la latitudine delle imbarcazioni e il data rate~\cite{11217861}. Questo approccio non tiene conto delle dinamiche complesse che caratterizzano l'ambiente marittimo. Se in un dato istante due nodi sono fisicamente vicini, potrebbero non esserlo più pochi istanti dopo a causa della loro elevata differenza di rotta o velocità. Raggrupparli in uno stesso cluster comporterebbe una rapida rottura del collegamento, il che innescherebbe continue rielezioni del leader o dei relay e frammentazioni della rete.
+L'algoritmo analizzato nel capitolo precedente (\cref{sec:algoritmo_precedente}) organizza le navi in cluster valutandone principalmente la posizione e il canale di comunicazione con il leader. In particolare, vengono utilizzati la longitudine e la latitudine delle imbarcazioni e il data rate~\cite{11217861}. Questo approccio non tiene conto delle dinamiche complesse che caratterizzano l'ambiente marittimo. Se in un dato istante due nodi sono fisicamente vicini, potrebbero non esserlo più poco tempo dopo a causa della loro elevata differenza di rotta o velocità. Raggrupparli in uno stesso cluster comporterebbe una rapida rottura del collegamento, il che innescherebbe continue rielezioni del leader o dei relay e frammentazioni della rete.
 
 Dunque, il principale limite dell'algoritmo attuale risiede nel mancato sfruttamento dei dati a disposizione nel payload \ac{AIS}.
 Come illustrato nella \cref{sec:struttura_messaggio_ais}, i messaggi del Sistema di Identificazione Automatica (in particolare quelli di tipo 1, 2 e 3) contengono diverse informazioni di navigazione, tra cui: \ac{SOG} (velocità), \ac{COG} (direzione) e \ac{ROT} (velocità di virata)~\cite{itu_m1371_6}. Al momento, l'algoritmo ignora completamente questi dati, limitandosi a estrarre solo la posizione.
@@ -34,7 +34,7 @@ Per garantire il raggiungimento degli obiettivi prefissati, il nuovo algoritmo d
 \begin{itemize}
     \item Il sistema deve poter estrarre dai messaggi \ac{AIS} la velocità e la rotta.
     \item In assenza delle informazioni cinematiche, deve essere possibile continuare a operare senza tali dati.
-    \item L'algoritmo deve valutare le differenze di \ac{SOG} e \ac{COG} tra imbarcazioni e favorire, nella scelta dei relay o nella formazione dei cluster, nodi con una mobilità compatibile alla nave presa in esame.
+    \item L'algoritmo deve valutare le differenze di \ac{SOG} e \ac{COG} tra imbarcazioni e favorire, nella scelta dei relay o nella formazione dei cluster, nodi con una mobilità compatibile con la nave presa in esame.
     \item La simulazione deve essere in grado di esporre i dati ottenuti per poter effettuare valutazioni e confronti con la versione precedente dell'algoritmo.
 \end{itemize}
 

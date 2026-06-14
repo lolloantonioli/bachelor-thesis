@@ -15,7 +15,7 @@ class LoadSogCogFromTrace<T>(
 
     override fun execute() {
         val time = environment.simulation.time.toDouble()
-        // Ricerca del punto più recente rispetto al tempo di simulazione
+        // Ricerca dell'ultimo punto rispetto al tempo di simulazione
         val point = points.lastOrNull { it.time <= time } ?: points.firstOrNull()
         
         // Aggiornamento delle molecole nel nodo (Speed e Course Over Ground)

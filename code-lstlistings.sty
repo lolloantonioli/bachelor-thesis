@@ -53,16 +53,12 @@
 }
 
 \lstdefinelanguage{XML}{
-  sensitive=true,
   morestring=[b]",
   morestring=[s]{>}{<},
+  morecomment=[s]{<?}{?>},
   morecomment=[s]{<!--}{-->},
-  stringstyle=\color{magenta},
-  commentstyle=\color{olive},
-  identifierstyle=\color{black},
-  keywordstyle=\color{blue},
-  ndkeywordstyle=\color{blue},
-  morekeywords={xmlns,version,encoding},
-  breaklines=true,
-  showstringspaces=false,
+  stringstyle=\color{black},
+  identifierstyle=\color{blue},
+  keywordstyle=\color{red},
+  morekeywords={xmlns,xsi,noNamespaceSchemaLocation}
 }

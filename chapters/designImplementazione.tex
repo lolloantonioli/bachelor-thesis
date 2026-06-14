@@ -6,15 +6,15 @@
 
 La soluzione proposta introduce una penalità di mobilità basata su due componenti:
 \begin{itemize}
-	\item Componente angolare (\ac{COG}): misura la divergenza nella direzione di movimento tra due nodi. Calcola l'angolo più breve tra le due rotte, normalizzato su un intervallo di $[0, 1]$, dove 0 rappresenta nodi che si muovono nella stessa direzione e 1 rappresenta nodi che si muovono in direzioni completamente opposte.
-	\item Componente di velocità (\ac{SOG}): misura la divergenza nella velocità di movimento tra due nodi, rapportata a una soglia massima tollerata di 25 nodi. Anche questa componente è normalizzata in $[0, 1]$.
+	\item Componente angolare (\ac{COG}): misura la differenza di direzione tra due nodi. Calcola l'angolo più breve tra le due rotte, normalizzato su un intervallo di $[0, 1]$, dove 0 rappresenta nodi che si muovono nella stessa direzione e 1 rappresenta nodi che si muovono in direzioni opposte.
+	\item Componente di velocità (\ac{SOG}): misura il divario della velocità di movimento tra due navi rapportato a una soglia massima tollerata di 25 nodi. Anche questo valore è normalizzato in $[0, 1]$.
 \end{itemize}
 
 \paragraph{Penalità unificata:}
 Le due componenti vengono combinate in una penalità di mobilità unica tramite una media ponderata, dove la componente angolare riceve un peso maggiore (60\%) rispetto a quella di velocità (40\%).
 
 \paragraph{Metrica finale:}
-La penalità di mobilità viene applicata alla metrica originale di trasmissione attraverso un fattore moltiplicativo. In questo modo, i percorsi tra nodi con mobilità divergente vengono penalizzati, aumentando il costo computazionale degli algoritmi di elezione del leader e selezione dei relè.
+La penalità di mobilità viene applicata alla metrica originale di trasmissione attraverso un fattore moltiplicativo. In questo modo, i percorsi tra nodi con mobilità molto differente vengono penalizzati, aumentando il costo computazionale degli algoritmi di elezione del leader e selezione dei relè.
 
 L'introduzione della metrica consapevole della mobilità influenza i contesti dell'algoritmo di clustering attraverso:
 
@@ -24,48 +24,48 @@ L'introduzione della metrica consapevole della mobilità influenza i contesti de
     \item la selezione dei relè inter-cluster per il routing dei dati.
 \end{itemize}
 
-Questo garantisce che i nodi con mobilità simili siano preferiti per mantenere le comunicazioni.
+Questo garantisce che siano preferiti nodi con mobilità simile per mantenere le comunicazioni.
 
 \section{Estrazione e integrazione delle feature AIS aggiuntive}
 \label{sec:estrazione_feature_AIS}
 
-I parametri principali estratti dai messaggi AIS includono:
+I parametri principali estratti dai messaggi \ac{AIS} includono:
 \begin{itemize}
-    \item SOG: La velocità del vascello rispetto al terreno, espressa in nodi
-    \item COG: La rotta del vascello rispetto al nord geografico, espressa in gradi
-    \item ID della nave
-    \item Posizione geografica (longitudine e latitudine)
-    \item Timestamp del messaggio
+    \item \ac{SOG}.
+    \item \ac{COG}.
+    \item ID della nave.
+    \item Posizione geografica (longitudine e latitudine).
+    \item Timestamp del messaggio.
 \end{itemize}
 
-Nel formato AIS raw NMEA 0183 utilizzato in questo lavoro, SOG e COG sono codificati secondo le specifiche standard:
+Nel formato \ac{AIS} raw NMEA 0183 utilizzato in questo lavoro, \ac{SOG} e \ac{COG} sono codificati secondo le specifiche standard:
 \begin{itemize}
-    \item SOG: Codificato come valore intero in 1/10 di nodo (ovvero moltiplicato per 10). Il valore 1024 viene utilizzato per indicare ``dato non disponibile"
-    \item COG: Codificato come valore intero in 1/10 di grado (ovvero moltiplicato per 10). Il valore 3600 (equivalente a 360.0 gradi) viene utilizzato per indicare ``dato non disponibile"
+    \item \ac{SOG}: Codificato come valore intero in 1/10 di nodo (ovvero moltiplicato per 10). Il valore 1024 viene utilizzato per indicare ``dato non disponibile".
+    \item \ac{COG}: Codificato come valore intero in 1/10 di grado (ovvero moltiplicato per 10). Il valore 3600 (equivalente a 360.0 gradi) viene utilizzato per indicare ``dato non disponibile".
 \end{itemize}
 
-Durante la fase di parsing, questi valori codificati vengono decodificati dividendo per i rispettivi fattori di scala per ottenere i valori in unità standard (nodi e gradi).
+Durante la fase di parsing, questi valori vengono decodificati dividendo per i rispettivi fattori di scala per ottenere i valori in unità standard (nodi e gradi).
 
 \subsection{Decodifica messaggi AIS}
 \label{sec:decodifica_messaggi_AIS}
 
-Per la decodifica dei messaggi AIS, è stata utilizzata la libreria \texttt{dk.dma.ais}, sviluppata dal Danish Maritime Authority (DMA). Questa libreria fornisce un parser in grado di gestire il protocollo NMEA 0183 standard e la decodifica dei messaggi AIS multi-riga.
+Per la decodifica dei messaggi \ac{AIS}, è stata utilizzata la libreria \texttt{dk.dma.ais}, sviluppata dal Danish Maritime Authority (DMA)~\cite{dmaAisCore}. Questa libreria fornisce un parser in grado di gestire il protocollo NMEA 0183 standard e la decodifica dei messaggi \ac{AIS} multi-riga.
 
-La libreria è integrata nel progetto e offre le seguenti funzionalità:
+La libreria è integrata nel progetto e offre le seguenti funzionalità~\cite{dmaAisCore}:
 \begin{itemize}
-    \item parsing dei singoli frame AIS secondo le specifiche NMEA 0183;
+    \item parsing dei singoli frame \ac{AIS} secondo le specifiche NMEA 0183;
     \item ricomposizione automatica dei messaggi multi-sentenza;
     \item validazione del checksum;
     \item decodifica dei campi contenuti nei messaggi.
 \end{itemize}
 
-Nel nostro caso (\cref{lst:AisPayload}), la libreria fornisce accesso ai campi di velocità e rotta attraverso l'interfaccia \texttt{IVesselPositionMessage}, che rappresenta i messaggi AIS contenenti informazioni di posizionamento (tipicamente messaggi di tipo 1, 2, 3). Si controlla se il messaggio attuale contenga SOG e COG e, se non li contiene, li assegnamo il valore \texttt{null}.
+Nel nostro caso (\cref{lst:AisPayload}), la libreria fornisce accesso ai campi di velocità e rotta attraverso l'interfaccia \texttt{IVesselPositionMessage}, che rappresenta i messaggi \ac{AIS} contenenti informazioni di posizionamento (tipicamente messaggi di tipo 1, 2, 3)~\cite{dmaAisCore}. Si controlla se il messaggio attuale contenga \ac{SOG} e \ac{COG} e, se non li contiene, viene assegnato loro il valore \texttt{null}.
 
 \lstinputlisting[
 	float,
 	language=Kotlin,
 	label={lst:AisPayload},
-	caption={Parte del codice della classe AisPayload}
+	caption={Parte del codice della classe \texttt{AisPayload}.}
 ]{listings/AisPayload.kt}
 
 \newpage
@@ -73,32 +73,32 @@ Nel nostro caso (\cref{lst:AisPayload}), la libreria fornisce accesso ai campi d
 \subsection{Generazione tracce GPX}
 \label{sec:generazione_tracce_GPX}
 
-Successivamente alla conversione dei dati AIS, SOG e COG vengono integrati all'interno dei file GPX (GPS Exchange Format) generati dai messaggi del Sistema di Identificazione Automatica. Le tracce GPX fungono da ponte tra i dati AIS e la simulazione Alchemist, consentendo di riprodurre i movimenti delle imbarcazioni e allegare metadati aggiuntivi ai nodi.
+Successivamente alla conversione dei dati \ac{AIS}, \ac{SOG} e \ac{COG} vengono integrati all'interno dei file \ac{GPX} generati dai messaggi del Sistema di Identificazione Automatica. Le tracce \ac{GPX} fungono da ponte tra i dati AIS e la simulazione Alchemist, consentendo di riprodurre i movimenti delle imbarcazioni e allegare metadati aggiuntivi ai nodi.
 
 Nella fase di generazione delle tracce, sono state apportate le seguenti modifiche:
 
 \begin{enumerate}
-    \item \emph{Anonimizzazione del nome}: i nomi dei vascelli (MMSI) vengono sostituiti con identificativi anonimizzati nel formato \texttt{anonXXXX}, dove \texttt{XXXX} è un numero progressivo.
-    \item \emph{Estensioni GPX}: Per ogni punto di traccia (\texttt{trkpt}), sono stati aggiunti elementi di estensione contenenti SOG e COG nel formato indicato nel \cref{lst:GPXFormatter}.
+    \item \emph{Anonimizzazione del nome}: i nomi dei vascelli (\ac{MMSI}) vengono sostituiti con identificativi anonimizzati nel formato \texttt{anonXXXX}, dove \texttt{XXXX} è un numero progressivo.
+    \item \emph{Estensioni \ac{GPX}}: Per ogni punto di traccia (\texttt{trkpt}), sono stati aggiunti elementi di estensione contenenti \ac{SOG} e \ac{COG} nel formato indicato nel \cref{lst:GPXFormatter}.
 \end{enumerate}
 
 \lstinputlisting[
 	float,
 	language=XML,
 	label={lst:GPXFormatter},
-	caption={Estensione aggiunta alle tracce GPX delle navi}
+	caption={Estensione aggiunta alle tracce \ac{GPX} delle navi.}
 ]{listings/GPXFormatter.kt}
 
 \subsection{Caricamento di SOG e COG nella simulazione}
 \label{sec:caricamento_dati_simulazione}
 
-Durante la simulazione Alchemist, l'azione \texttt{LoadSogCogFromTrace} (\cref{lst:LoadSogCogFromTrace}) è responsabile della lettura di SOG e COG dai file GPX e della loro disponibilità come molecole nel simulatore.
+Durante la simulazione Alchemist, l'azione \texttt{LoadSogCogFromTrace} (\cref{lst:LoadSogCogFromTrace}) è responsabile della lettura di \ac{SOG} e \ac{COG} dai file \ac{GPX} e della loro disponibilità come molecole nel simulatore.
 
 L'azione funziona nel seguente modo:
 \begin{enumerate}
-    \item associa ogni nodo della simulazione al corrispondente file GPX in base all'indice;
+    \item associa ogni nodo della simulazione al corrispondente file \ac{GPX} in base all'indice;
     \item per ogni passo di simulazione, individua il punto di traccia corrispondente al tempo di simulazione corrente;
-    \item legge i valori di SOG e COG dalla traccia;
+    \item legge i valori di \ac{SOG} e \ac{COG} dalla traccia;
     \item filtra i valori non disponibili (\texttt{NaN});
     \item assegna i valori come concentrazioni delle molecole \texttt{sog} e \texttt{cog} nel nodo (\cref{lst:simulation}).
 \end{enumerate}
@@ -107,7 +107,7 @@ L'azione funziona nel seguente modo:
 	float,
 	language=Kotlin,
 	label={lst:LoadSogCogFromTrace},
-	caption={Codice semplificato dell'azione Alchemist per leggere SOG e COG dalle tracce GPX}
+	caption={Codice semplificato dell'azione Alchemist per leggere \ac{SOG} e \ac{COG} dalle tracce \ac{GPX}.}
 ]{listings/LoadSogCogFromTrace.kt}
 	
 \lstinputlisting[
@@ -125,15 +125,15 @@ L'azione funziona nel seguente modo:
 \subsection{Costanti definite e lettura dei valori}
 \label{sec:costanti_lettura_valori}
 
-I valori di SOG e COG vengono letti dall'ambiente di simulazione tramite la funzione \texttt{getIfDefined}, che restituisce \texttt{NaN} se il parametro non è disponibile.
+I valori di \ac{SOG} e \ac{COG} vengono letti dall'ambiente di simulazione tramite la funzione \texttt{getIfDefined}, che restituisce \texttt{NaN} se il parametro non è disponibile.
 
-Il \cref{lst:constants} mostra le costanti utilizzate per il calcolo della penalità di mobilità. Questi valori sono stati scelti per bilanciare l'influenza della direzione e della velocità sulla metrica di selezione:
+Il \cref{lst:constants} mostra le costanti utilizzate per il calcolo della penalità di mobilità e la funzione \texttt{getIfDefined}. Questi valori sono stati scelti per bilanciare l'influenza della direzione e della velocità sulla metrica di selezione.
 
 \lstinputlisting[
 	float,
 	language=Kotlin,
 	label={lst:constants},
-	caption={Costanti utilizzate per il calcolo della penalità di mobilità}
+	caption={Costanti utilizzate per il calcolo della penalità di mobilità.}
 ]{listings/constants.kt}
 
 \subsubsection{Significato dei parametri}
@@ -157,10 +157,10 @@ Il \cref{lst:angularMobilityPenalty} implementa il calcolo della penalità angol
 	float,
 	language=Kotlin,
 	label={lst:angularMobilityPenalty},
-	caption={Calcolo della penalità angolare basata su COG}
+	caption={Calcolo della penalità angolare basata su \ac{COG}.}
 ]{listings/angularMobilityPenalty.kt}
 
-L'algoritmo calcola la minima distanza angolare tra due direzioni, considerando che gli angoli sono circolari ($[0°, 360°$). Ad esempio, una nave a $350°$ e una a $10°$ hanno una differenza di soli $20°$ e non di $340°$. Il risultato è normalizzato in $[0, 1]$, dove $0$ indica navi perfettamente allineate e $1$ indica navi con direzioni opposte.
+L'algoritmo calcola la minima distanza angolare tra due direzioni, considerando che gli angoli sono circolari ([0°, 360°)). Ad esempio, una nave a 350° e una a 10° hanno una differenza di soli 20° e non di 340°. Il risultato è normalizzato in [0, 1], dove 0 indica navi perfettamente allineate e 1 indica navi con direzioni opposte.
 
 \subsubsection{Penalità di velocità (SOG)}
 \label{sec:penalita_velocita}
@@ -171,10 +171,10 @@ Il \cref{lst:speedMobilityPenalty} implementa il calcolo della penalità di velo
 	float,
 	language=Kotlin,
 	label={lst:speedMobilityPenalty},
-	caption={Calcolo della penalità di velocità basata su SOG}
+	caption={Calcolo della penalità di velocità basata su \ac{SOG}.}
 ]{listings/speedMobilityPenalty.kt}
 
-Questa funzione calcola la penalità come rapporto tra la differenza assoluta di velocità tra i due nodi e una soglia di tolleranza. La penalità è limitata a $1{,}0$ se la differenza eccede la soglia, poiché differenze maggiori non fornirebbero informazioni aggiuntive utili. Il risultato è quindi sempre in $[0, 1]$, coerentemente con la penalità angolare descritta nella sezione precedente (\cref{penalita_angolare}).
+Questa funzione calcola la penalità come il rapporto tra la differenza assoluta di velocità tra i due nodi e una soglia di tolleranza. La penalità è limitata a $1{,}0$ se la differenza eccede la soglia, poiché differenze maggiori non fornirebbero informazioni aggiuntive utili. Il risultato è quindi sempre in $[0, 1]$, coerentemente con la penalità angolare descritta nella sezione precedente (\cref{sec:penalita_angolare}).
 
 \subsection{Integrazione nella metrica di selezione}
 \label{integrazione_metrica_selezione}
@@ -182,14 +182,16 @@ Questa funzione calcola la penalità come rapporto tra la differenza assoluta di
 \subsubsection{Calcolo della penalità combinata}
 \label{calcolo_penalita_combinata}
 
-Il \cref{lst:algorithmIntegration} mostra le modifiche effettuate nell'entry point della simulazione. Vengono lette la velocità e la direzione della nave attuale dalla simulazione e si ottiene tramite \texttt{neighboring} un campo contenente SOG e COG del proprio vicinato. In seguito, tramite le funzioni mostrate nella \cref{sec:penalita_angolare} e nella \cref{sec:penalita_velocita}, vengono calcolate le penalità. Quest'ultime vengono unite e ponderate (dando più importanza alal direzione) e viene calcolata la metrica finale \texttt{mobilityAwareMetric}. La metrica finale è ottenuta moltiplicando il tempo di trasmissione originale per un fattore che incorpora la penalità di mobilità. Quindi, nel caso peggiore, due navi con direzioni opposte e velocità molto diverse, la metrica arriva a 3 volte \texttt{timeToTransmit}. Se invece non ci sono differenze significative, oppure se SOG e COG non sono disponibili, la metrica resta equivalente a \texttt{timeToTransmit}.
+Il \cref{lst:algorithmIntegration} mostra le modifiche effettuate nell'entry point della simulazione. Vengono lette la velocità e la direzione della nave attuale dalla simulazione e si ottiene tramite \texttt{neighboring} un campo contenente \ac{SOG} e \ac{COG} del proprio vicinato. In seguito, tramite le funzioni mostrate nella \cref{sec:penalita_angolare} e nella \cref{sec:penalita_velocita}, vengono calcolate le penalità. Queste ultime vengono unite e ponderate (dando più importanza alla direzione) e viene calcolata la metrica finale \texttt{mobilityAwareMetric}. La metrica finale è ottenuta moltiplicando il tempo di trasmissione originale per un fattore che incorpora la penalità di mobilità. Quindi, nel caso peggiore, per due navi con direzioni opposte e velocità molto diverse, la metrica arriva a tre volte \texttt{timeToTransmit}. Se invece non ci sono differenze significative, oppure se \ac{SOG} e \ac{COG} non sono disponibili, la metrica resta equivalente a \texttt{timeToTransmit}.
 
 \lstinputlisting[
 	float,
 	language=Kotlin,
-	label={lst:speedMobilityPenalty},
-	caption={Calcolo della penalità di velocità basata su SOG}
-]{listings/speedMobilityPenalty.kt}
+	label={lst:algorithmIntegration},
+	caption={Modifiche inserite nell'algoritmo della simulazione.}
+]{listings/algorithmIntegration.kt}
+
+\newpage
 
 \subsubsection{Applicazione nei calcoli}
 \label{applicazione_calcoli}
@@ -200,7 +202,7 @@ La metrica consapevole della mobilità è applicata principalmente in tre punti 
 	float,
 	language=Kotlin,
 	label={lst:metricUse},
-	caption={Utilizzo della nuova metrica nella selezione del leader e del relay}
+	caption={Utilizzo della nuova metrica nella selezione del leader e del relay.}
 ]{listings/metricUse.kt}
 
 La metrica è usata come funzione di costo nell'operatore \texttt{distanceTo}, che calcola il gradiente di distanza da ogni nodo verso il ground station. Inoltre è utilizzata per l'elezione dei leader dei cluster e per la scelta dei relay.
