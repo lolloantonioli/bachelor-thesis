@@ -1,0 +1,9 @@
+_pools:
+  - pool: &move
+      - time-distribution: 0.1
+        type: Event
+        actions:
+          - type: LoadSogCogFromTrace
+            parameters:
+              path: "navigation-routes"
+              referenceTimeEpochSeconds: *start-time

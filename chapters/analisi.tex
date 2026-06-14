@@ -1,4 +1,47 @@
 \chapter{Analisi}
-\section{Limiti dell’algoritmo esistente}
+\label{chap:analisi}
+
+\section{Limiti dell'algoritmo esistente}
+\label{sec:limiti_algoritmo_esistente}
+
+L'algoritmo analizzato nel capitolo precedente (\cref{sec:algoritmo_precedente}) organizza le navi in cluster valutandone principalmente la posizione e il canale di comunicazione con il leader del cluster. In particolare, vengono utilizzati la longitudine e la latitudine delle imbarcazioni e il data rate~\cite{11217861}. Questo approccio non tiene conto delle dinamiche complesse che caratterizzano l'ambiente marittimo. Se in un dato istante due nodi sono fisicamente vicini, potrebbero non esserlo più pochi istanti dopo a causa della loro elevata differenza di rotta o velocità. Raggrupparli in uno stesso cluster comporterebbe una rapida rottura del collegamento, il che innescherebbe continue rielezioni del leader o dei relay e frammentazioni della rete.
+
+Dunque, il principale limite dell'algoritmo attuale risiede nel mancato sfruttamento dei dati a disposizione nel payload \ac{AIS}.
+Come illustrato nella \cref{sec:struttura_messaggio_ais}, i messaggi del Sistema di Identificazione Automatica (in particolare quelli di tipo 1, 2 e 3) contengono diverse informazioni di navigazione, tra cui: \ac{SOG} (velocità), \ac{COG} (direzione) e \ac{ROT} (velocità di virata)~\cite{itu_m1371_6}. Al momento, l'algoritmo ignora completamente questi dati, limitandosi a estrarre solo la posizione.
+
+Altre limitazioni dell'esperimento sono:
+\begin{itemize}
+    \item \emph{quantità modesta di dati}: i dati utilizzati per l'esperimento provengono da uno scenario reale nel fiordo di Kiel. Tuttavia, riguardano una finestra circoscritta a sei ore nell'arco di una giornata, che potrebbe non essere rappresentativa del traffico nel fiordo~\cite{11217861};
+    \item \emph{casi limite}: non sono stati valutati alcuni casi limite (es. guasti al nodo leader) per esaminare il comportamento degli approcci valutati in specifiche situazioni~\cite{11217861};
+    \item \emph{sicurezza}: l'esperimento non tiene conto degli aspetti sulla sicurezza trattati nel primo punto della \cref{sec:limiti}~\cite{11217861};
+    \item \emph{sintesi dei dati}: non sono stati ricercati algoritmi di sintesi dati~\cite{11217861};
+    \item \emph{condizioni meteo}: non sono state prese in considerazione le avversità e il mutare delle condizioni meteo marine~\cite{11217861}.
+\end{itemize}
+
 \section{Obiettivi}
+\label{sec:obiettivi}
+
+L'obiettivo di questa tesi (in linea con le direttive della Fase 2 della roadmap \emph{CoMPass}~\cite{roadmap}) è quello di superare i limiti dell'approccio che tiene conto solo della posizione, migliorando la selezione dei relay e la formazione dei cluster mediante l'inclusione di dati di navigazione aggiuntivi. Nello specifico, si intende estendere l'algoritmo \ac{CSC} estraendo dal payload \ac{AIS} i dati di \ac{SOG} (velocità rispetto al fondo) e \ac{COG} (rotta rispetto al fondo) per integrarli direttamente all'interno dell'algoritmo. Due navi che, in un determinato istante, risultano geograficamente vicine e presentano un buon data rate possono essere assegnate alla stessa regione. Tuttavia, se tale scelta non considera le differenze di direzione e velocità, le imbarcazioni potrebbero allontanarsi rapidamente rendendo necessarie frequenti riorganizzazioni della rete. In base a quanto le imbarcazioni viaggiano in direzioni simili e velocità affini, si punta a creare cluster più stabili nel tempo, riducendo la volatilità della topologia della rete e migliorando l'efficienza della comunicazione verso la costa.
+
 \section{Requisiti}
+\label{sec:requisiti}
+
+Per garantire il raggiungimento degli obiettivi prefissati, il nuovo algoritmo deve soddisfare una serie di requisiti. Tali requisiti sono elencati di seguito suddivisi in funzionali (le operazioni che il sistema deve compiere) e non funzionali (come le deve compiere).
+
+\subsection{Requisiti funzionali}
+\label{sec:requisiti_funzionali}
+
+\begin{itemize}
+    \item Il sistema deve poter estrarre dai messaggi \ac{AIS} la velocità e la rotta.
+    \item In assenza delle informazioni cinematiche, deve essere possibile continuare a operare senza tali dati.
+    \item L'algoritmo deve valutare le differenze di \ac{SOG} e \ac{COG} tra imbarcazioni e favorire, nella scelta dei relay o nella formazione dei cluster, nodi con una mobilità compatibile alla nave presa in esame.
+    \item La simulazione deve essere in grado di esporre i dati ottenuti per poter effettuare valutazioni e confronti con la versione precedente dell'algoritmo.
+\end{itemize}
+
+\subsection{Requisiti non funzionali}
+\label{sec:requisiti_non_funzionali}
+
+\begin{itemize}
+    \item Il calcolo delle nuove metriche con l'aggiunta di \ac{SOG} e \ac{COG} non deve introdurre un carico computazionale tale da far perdere i vantaggi del \ac{CSC}.
+    \item Le simulazioni devono poter essere rieseguite nelle stesse condizioni della versione precedente, in modo da consentire un confronto attendibile tra baseline e algoritmo modificato.
+\end{itemize}
