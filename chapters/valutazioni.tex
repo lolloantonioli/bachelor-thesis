@@ -1,6 +1,65 @@
 \chapter{Valutazioni}
 \label{chap:valutazioni}
 
+In questo capitolo si discutono i risultati ottenuti dalla sperimentazione precedente e da quella attuale e si confrontano i risultati.
+
+La metrica principale utilizzata per confrontare gli approcci è il data rate effettivamente ottenuto da ciascuna imbarcazione nella comunicazione verso la stazione a terra. Nel caso della baseline, tale valore coincide con il data rate del collegamento diretto. Invece per \ac{Dist-MR} e \ac{DR-MR} si segue il \ac{MST} verso la stazione a terra e si verifica, a ogni hop, se la capacità residua del collegamento consente di inoltrare sia il flusso locale sia quelli provenienti dai figli~\cite{11217861}. Indicando con $DR^u_n$ il data rate disponibile in uscita dal nodo $n$, con $C$ il numero di figli e con $d$ il data stream locale, il data rate disponibile per ciascun figlio viene calcolato come:
+
+\begin{equation}
+DR^f_n = \frac{DR^u_n - d}{C}
+\label{eq:forwarding_rate}
+\end{equation}
+
+Il flusso viene trasmesso se $DR^f_n > d$~\cite{11217861}.
+
+Per l'approccio \ac{CSC} vengono introdotte ulteriori metriche. La principale è il \textit{reduction factor} $RF$, che misura il grado di compressione, riduzione o sintesi richiesto al leader per inoltrare i dati aggregati verso il relay successivo o verso la stazione a terra. Per un cluster composto da $C$ nodi, con data rate in uscita del leader pari a $DR^u$ e data stream individuale pari a $d$, il fattore di riduzione è definito come~\cite{11217861}:
+
+\begin{equation}
+RF = \min\left(1, \frac{DR^u}{dC}\right)
+\label{eq:reduction_factor}
+\end{equation}
+
+Oltre al fattore di riduzione, vengono considerate la dimensione media dei cluster, il numero di cluster costituiti da una sola nave (\textit{singleton clusters}) e il numero totale di cluster generati~\cite{11217861}.
+
 \section{Risultati dell’esperimento precedente}
+\label{sec:risultati_precedenti}
+
+L'esperimento precedente è stato ripetuto cento volte utilizzando seed casuali differenti, i quali controllano sia quali navi vengono equipaggiate con torri 5G, sia la schedulazione dei round di calcolo di \ac{AP}~\cite{11217861}. Una delle misurazioni ha confrontato il data rate medio (espresso in Kbps) ottenuto dalla baseline non cooperativa con quello dei vari approcci multi-relay (\ac{Dist-MR}, \ac{DR-MR} e \ac{CSC}), al variare della frequenza di aggiornamento e della probabilità di presenza della connessione 5G~\cite{11217861}. Come illustrato in \cref{fig:datarate_prec}, dotare le navi di funzionalità di backhaul tramite torri 5G ($p_{5G}$) ha un grande potenziale per migliorare i tassi di trasmissione dei dati~\cite{11217861}. Tuttavia, la baseline e gli approcci \ac{Dist-MR} e \ac{DR-MR} mostrano miglioramenti limitati. Al contrario, un'implementazione anche modesta ($p_{5G} = 0.01$) produce miglioramenti considerevoli per \ac{CSC}, che supera costantemente tutte le altre strategie, dimostrando picchi più elevati e data rate sostenuti durante l'intera simulazione~\cite{11217861}. Sorprendentemente, l'approccio \ac{DR-MR} offre prestazioni generalmente inferiori. Questo risultato controintuitivo è presumibilmente dovuto al fatto che le navi con un buon data rate vengono selezionate in modo eccessivo, finendo per dover gestire troppi flussi e causando la congestione di pochi canali~\cite{11217861}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/barchart_datarate.pdf}
+    \caption{Confronto del data rate medio al variare della probabilità di equipaggiamento 5G delle navi ($p_{5G}$), della frequenza di esecuzione del round ($f$) e dell'algoritmo utilizzato. La presenza di navi dotate di 5G migliora notevolmente la velocità di trasmissione complessiva. L'approccio \ac{CSC} risulta il più performante in ogni condizione valutata, sfruttando al meglio i benefici derivanti dal 5G~\cite{11217861}.}
+    \label{fig:datarate_prec}
+\end{figure}
+
+\newpage
+
+Per quanto riguarda l'evoluzione temporale, la \cref{fig:line_datarate_prec} dimostra che la frequenza di esecuzione di \ac{AP} ($f$) ha un impatto molto modesto sulle prestazioni~\cite{11217861}. Frequenze più elevate aiutano a ridurre la varianza (evidenziata dalle ombreggiature attorno alle medie nei plot temporali), ma anche a basse frequenze si osservano risultati stabili, indicando che l'overhead sul canale generato dagli algoritmi auto-organizzanti è trascurabile nella maggior parte dei casi~\cite{11217861}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/linechart_datarate.pdf}
+    \caption{Andamento temporale del data rate medio per diverse probabilità di imbarcazioni equipaggiate con torri 5G ($p_{5G}$), confrontando i diversi algoritmi e le diverse frequenze di aggiornamento. La linea continua indica il valore medio, mentre le aree ombreggiate rappresentano l'intervallo di $1\sigma$ attorno alla media. Anche una presenza minima di imbarcazioni con tecnologia 5G porta a un miglioramento significativo delle prestazioni. L'approccio \ac{CSC} risulta costantemente superiore agli altri in termini di velocità di trasmissione, sfruttando in modo più efficace la disponibilità del 5G.~\cite{11217861}.}
+    \label{fig:line_datarate_prec}
+\end{figure}
+
+\newpage
+
+Infine, l'analisi delle metriche specifiche per \ac{CSC} (si veda \cref{fig:metriche_csc_prec}) rivela come l'algoritmo reagisce all'infrastruttura. Il fattore di riduzione medio aumenta con $p_{5G}$, avvicinandosi al valore 1. Questo indica che i leader dei cluster possono inoltrare una porzione maggiore dei flussi originali con perdite o sintesi minime~\cite{11217861}. Le prestazioni del fattore di riduzione raggiungono un picco a $p_{5G} = 0.2$ per poi diminuire; l'ipotesi formulata dagli autori è che, quando i cluster diventano troppo grandi, si verifichino fenomeni di congestione per i relay intra-cluster simili a quelli osservati in \ac{DR-MR}~\cite{11217861}. Di conseguenza, all'aumentare di $p_{5G}$, la dimensione media dei cluster cresce (da 1-2 navi fino a più di 10), il numero di \textit{singleton clusters} diminuisce drasticamente e il numero totale di cluster si riduce, poiché la formazione di cluster più grandi diventa sempre più conveniente~\cite{11217861}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.24\textwidth]{figures/barchart_reduction-factor[mean].pdf} \hfill
+    \includegraphics[width=0.24\textwidth]{figures/barchart_cluster-size[mean].pdf} \hfill
+    \includegraphics[width=0.24\textwidth]{figures/barchart_clustersComposedOfOneElement.pdf} \hfill
+    \includegraphics[width=0.24\textwidth]{figures/barchart_n_clusters.pdf}
+    \caption{Metriche specifiche di \ac{CSC} da sinistra verso destra: fattore di riduzione medio, dimensione media del cluster, numero di cluster singoli e numero medio di cluster. Tutti i dati sono stati misurati per $f = 0,2\text{ Hz}$ e per diverse probabilità di torri 5G installate sulle imbarcazioni ($p_{5G}$)~\cite{11217861}.}
+    \label{fig:metriche_csc_prec}
+\end{figure}
+
 \section{Risultati del nuovo algoritmo}
+\label{sec:risultati_nuovi}
+
 \section{Confronto e discussione}
+\label{sec:confronto_discussione}

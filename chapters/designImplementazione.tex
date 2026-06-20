@@ -16,35 +16,12 @@ Le due componenti vengono combinate in una penalità di mobilità unica tramite 
 \paragraph{Metrica finale:}
 La penalità di mobilità viene applicata alla metrica originale di trasmissione attraverso un fattore moltiplicativo. In questo modo, i percorsi tra nodi con mobilità molto differente vengono penalizzati, aumentando il costo computazionale degli algoritmi di elezione del leader e selezione dei relè.
 
-L'introduzione della metrica consapevole della mobilità influenza i contesti dell'algoritmo di clustering attraverso:
-
-\begin{itemize}
-    \item il calcolo della distanza topologica verso la stazione base, fondamentale per l'elezione del leader;
-    \item la misurazione delle distanze intra-cluster tra leader e nodi membri;
-    \item la selezione dei relè inter-cluster per il routing dei dati.
-\end{itemize}
-
-Questo garantisce che siano preferiti nodi con mobilità simile per mantenere le comunicazioni.
+L'introduzione della metrica consapevole della mobilità influenza diversi contesti dell'algoritmo di clustering. In primis, questo valore incide sul calcolo della distanza topologica verso la stazione base, fondamentale per l'elezione del leader. In secondo luogo, la nuova metrica interviene nella misurazione delle distanze intra-cluster tra leader e nodi membri e nella selezione dei relè inter-cluster per il routing dei dati. Questo garantisce che siano preferiti nodi con mobilità simile per mantenere le comunicazioni.
 
 \section{Estrazione e integrazione delle feature AIS aggiuntive}
 \label{sec:estrazione_feature_AIS}
 
-I parametri principali estratti dai messaggi \ac{AIS} includono:
-\begin{itemize}
-    \item \ac{SOG}.
-    \item \ac{COG}.
-    \item ID della nave.
-    \item Posizione geografica (longitudine e latitudine).
-    \item Timestamp del messaggio.
-\end{itemize}
-
-Nel formato \ac{AIS} raw NMEA 0183 utilizzato in questo lavoro, \ac{SOG} e \ac{COG} sono codificati secondo le specifiche standard:
-\begin{itemize}
-    \item \ac{SOG}: Codificato come valore intero in 1/10 di nodo (ovvero moltiplicato per 10). Il valore 1024 viene utilizzato per indicare ``dato non disponibile".
-    \item \ac{COG}: Codificato come valore intero in 1/10 di grado (ovvero moltiplicato per 10). Il valore 3600 (equivalente a 360.0 gradi) viene utilizzato per indicare ``dato non disponibile".
-\end{itemize}
-
-Durante la fase di parsing, questi valori vengono decodificati dividendo per i rispettivi fattori di scala per ottenere i valori in unità standard (nodi e gradi).
+I parametri principali estratti dai messaggi \ac{AIS} includono: l'ID della nave, la posizione geografica (longitudine e latitudine), il timestamp del messaggio, \ac{SOG} e \ac{COG}. Nel formato \ac{AIS} raw NMEA 0183 utilizzato in questo lavoro, tali valori sono codificati secondo le specifiche standard: \ac{SOG} è espresso come valore intero in decimi di nodo (utilizzando il valore 1023 per indicare un dato non disponibile), mentre \ac{COG} è codificato in decimi di grado, usando 3600 (equivalente a 360.0 gradi) per per indicare ``dato non disponibile"~\cite{itu_m1371_6}. Durante la fase di parsing, questi valori vengono decodificati dividendo per i rispettivi fattori di scala per ottenere i valori in unità standard (nodi e gradi).
 
 \subsection{Decodifica messaggi AIS}
 \label{sec:decodifica_messaggi_AIS}
