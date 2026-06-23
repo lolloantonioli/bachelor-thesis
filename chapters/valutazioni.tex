@@ -1,7 +1,7 @@
 \chapter{Valutazioni}
 \label{chap:valutazioni}
 
-In questo capitolo si discutono i risultati ottenuti dalla sperimentazione precedente e da quella attuale e si confrontano i risultati.
+In questo capitolo vengono presentati e confrontati i risultati ottenuti dalla sperimentazione precedente e da quella attuale.
 
 La metrica principale utilizzata per confrontare gli approcci è il data rate effettivamente ottenuto da ciascuna imbarcazione nella comunicazione verso la stazione a terra. Nel caso della baseline, tale valore coincide con il data rate del collegamento diretto. Invece per \ac{Dist-MR} e \ac{DR-MR} si segue il \ac{MST} verso la stazione a terra e si verifica, a ogni hop, se la capacità residua del collegamento consente di inoltrare sia il flusso locale sia quelli provenienti dai figli~\cite{11217861}. Indicando con $DR^u_n$ il data rate disponibile in uscita dal nodo $n$, con $C$ il numero di figli e con $d$ il data stream locale, il data rate disponibile per ciascun figlio viene calcolato come:
 
@@ -19,7 +19,7 @@ RF = \min\left(1, \frac{DR^u}{dC}\right)
 \label{eq:reduction_factor}
 \end{equation}
 
-Oltre al fattore di riduzione, vengono considerate la dimensione media dei cluster, il numero di cluster costituiti da una sola nave (\textit{singleton clusters}) e il numero totale di cluster generati~\cite{11217861}.
+Oltre al fattore di riduzione, vengono considerati la dimensione media dei cluster, il numero di cluster costituiti da una sola nave (\textit{singleton clusters}) e il numero totale di cluster generati~\cite{11217861}.
 
 \section{Risultati dell’esperimento precedente}
 \label{sec:risultati_precedenti}
@@ -40,7 +40,7 @@ Per quanto riguarda l'evoluzione temporale, la \cref{fig:line_datarate_prec} dim
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{figures/linechart_datarate.pdf}
-    \caption{Andamento temporale del data rate medio per diverse probabilità di imbarcazioni equipaggiate con torri 5G ($p_{5G}$), confrontando i diversi algoritmi e le diverse frequenze di aggiornamento. La linea continua indica il valore medio, mentre le aree ombreggiate rappresentano l'intervallo di $1\sigma$ attorno alla media. Anche una presenza minima di imbarcazioni con tecnologia 5G porta a un miglioramento significativo delle prestazioni. L'approccio \ac{CSC} risulta costantemente superiore agli altri in termini di velocità di trasmissione, sfruttando in modo più efficace la disponibilità del 5G.~\cite{11217861}.}
+    \caption{Andamento temporale del data rate medio per diverse probabilità di imbarcazioni equipaggiate con torri 5G ($p_{5G}$), confrontando i diversi algoritmi e le diverse frequenze di aggiornamento. La linea continua indica il valore medio, mentre le aree ombreggiate rappresentano l'intervallo di $1\sigma$ attorno alla media. Anche una presenza minima di imbarcazioni con tecnologia 5G porta a un miglioramento significativo delle prestazioni. L'approccio \ac{CSC} risulta costantemente superiore agli altri in termini di velocità di trasmissione, sfruttando in modo più efficace la disponibilità del 5G~\cite{11217861}.}
     \label{fig:line_datarate_prec}
 \end{figure}
 
@@ -61,5 +61,43 @@ Infine, l'analisi delle metriche specifiche per \ac{CSC} (si veda \cref{fig:metr
 \section{Risultati del nuovo algoritmo}
 \label{sec:risultati_nuovi}
 
+La simulazione con le modifiche apportate nel \cref{chap:designImplementazione} è stata ripetuta dieci volte con seed casuali diversi. Il primo risultato riguarda il confronto del data rate medio ottenuto dai vari algoritmi dell'esperimento. Come si osserva dalla \cref{fig:datarate_new}, il 5G migliora considerevolmente la trasmissione dati dell'approccio \ac{CSC}, evidenziando un data rate nettamente più alto rispetto agli altri metodi. Invece nella baseline, nel \ac{Dist-MR} e nel \ac{DR-MR} l'apporto del 5G non ha portato a miglioramenti.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/barchart_datarate_new.pdf}
+    \caption{Nuovo grafico di confronto del data rate medio ottenuto con l'integrazione di \ac{SOG} e \ac{COG} in base alla probabilità di equipaggiamento 5G delle navi ($p_{5G}$), alla frequenza di esecuzione del round ($f$) e all'algoritmo utilizzato.}
+    \label{fig:datarate_new}
+\end{figure}
+
+\newpage
+
+Riguardo all'andamento temporale dell'esperimento, in \cref{fig:line_datarate_new} si osserva che la frequenza di aggiornamento $f$ esercita un'influenza limitata sui risultati.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/linechart_datarate_new.pdf}
+    \caption{Nuovo andamento temporale del data rate medio dopo l'utilizzo di velocità e direzione delle imbarcazioni per diverse probabilità di imbarcazioni equipaggiate con torri 5G ($p_{5G}$), confrontando i diversi algoritmi e le diverse frequenze di aggiornamento. Le prestazioni di \ac{CSC} aumentano anche con una limitata quantità di navi con 5G.}
+    \label{fig:line_datarate_new}
+\end{figure}
+
+\newpage
+
+In conclusione, le metriche dedicate a \ac{CSC} in \cref{fig:metriche_csc_new} mostrano i risultati ottenuti integrando \ac{SOG} e \ac{COG} al vecchio algoritmo. Qui, il valore massimo del fattore di riduzione si ottiene per $p_{5G}=0.1$ e si ha un aumento della deviazione standard, probabilmente dovuto all'utilizzo di 10 seed invece che dei 100 originali. Per quanto concerne gli altri grafici, aumentando $p_{5G}$ la media del numero di componenti nel cluster aumenta, i cluster composti da una sola imbarcazione diminuiscono notevolmente e si riduce anche il numero di cluster.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.24\textwidth]{figures/barchart_reduction-factor[mean]_new.pdf} \hfill
+    \includegraphics[width=0.24\textwidth]{figures/barchart_cluster-size[mean]_new.pdf} \hfill
+    \includegraphics[width=0.24\textwidth]{figures/barchart_clustersComposedOfOneElement_new.pdf} \hfill
+    \includegraphics[width=0.24\textwidth]{figures/barchart_n_clusters_new.pdf}
+    \caption{Nuove metriche per \ac{CSC} da sinistra verso destra: fattore di riduzione medio, dimensione media del cluster, numero di cluster singoli e numero medio di cluster. Tutti i dati sono stati misurati per $f = 0,2\text{ Hz}$ e per diverse probabilità di torri 5G installate sulle imbarcazioni ($p_{5G}$).}
+    \label{fig:metriche_csc_new}
+\end{figure}
+
 \section{Confronto e discussione}
 \label{sec:confronto_discussione}
+
+Il confronto tra i risultati dell'esperimento precedente e quelli della nuova implementazione mostra differenze poco significative. Il data rate complessivo, riportato in \cref{fig:datarate_prec} e \cref{fig:datarate_new}, al variare della frequenza di aggiornamento e della probabilità di disponibilità di antenne 5G, mostra una riduzione di circa 100 Kbps rispetto alla versione originale, costante per ciascun algoritmo considerato. Nei grafici temporali (\cref{fig:line_datarate_prec} e \cref{fig:line_datarate_new}) l'andamento risulta inoltre più irregolare rispetto al caso passato. Per quanto riguarda la composizione dei cluster, il numero di cluster formati da una singola nave aumenta in corrispondenza di $p_{5G} = 0$ rispetto a prima, incrementando di conseguenza anche il numero medio di cluster nella stessa configurazione. La dimensione media dei cluster non presenta invece variazioni significative. Il fattore di riduzione medio diminuisce di circa un punto decimale per ciascuna configurazione, accompagnato da un aumento della deviazione standard.
+
+Questi dati presumibilmente derivano dall'introduzione del criterio di affinità navigazionale nel processo di clustering. Probabilmente, imponendo un vincolo aggiuntivo sulla compatibilità cinematica tra le navi, il numero di vicini idonei a formare un cluster si riduce, favorendo la formazione di cluster singleton nelle configurazioni con minore densità di infrastruttura 5G. La minore aggregazione tra navi compatibili comporta a sua volta una diminuzione del fattore di riduzione medio, poiché un numero inferiore di nodi contribuisce alla sintesi delle informazioni all'interno di ciascun cluster. L'aumento della deviazione standard sul fattore di riduzione può essere in parte attribuito al numero limitato di seed (10) utilizzati nella valutazione, che riduce la stabilità statistica della stima rispetto ai 100 seed della simulazione originale. L'integrazione di \ac{SOG} e \ac{COG} non ha prodotto miglioramenti significativi nelle metriche considerate. Sebbene il criterio di affinità navigazionale abbia modificato la composizione dei cluster, l'impatto sul data rate complessivo è risultato limitato nello scenario analizzato. Questo suggerisce che la sola introduzione di informazioni cinematiche non sia sufficiente a migliorare sensibilmente le prestazioni della rete e che ulteriori strategie di integrazione della mobilità debbano essere investigate.

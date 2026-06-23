@@ -22,24 +22,6 @@ class LoadSogCogFromTrace<T>(
         point?.sog?.takeUnless(Double::isNaN)?.let { set("sog", it) }
         point?.cog?.takeUnless(Double::isNaN)?.let { set("cog", it) }
     }
-
-    private fun readPoints(file: File): List<Point> {
-        // Setup del parser XML DOM omesso
-        val xmlPoints = document.getElementsByTagNameNS("*", "trkpt")
-        
-        return (0 until xmlPoints.length)
-            .map { xmlPoints.item(it) as Element }
-            .mapNotNull {
-                Point(
-                    // Calcolo del tempo relativo dall'inizio della simulazione
-                    time = /* parsing Instant e calcolo Duration */,
-                    sog = it.text("sog")?.toDoubleOrNull() ?: Double.NaN,
-                    cog = it.text("cog")?.toDoubleOrNull() ?: Double.NaN,
-                )
-            }
-            .filter { it.time >= 0.0 }
-            .sortedBy { it.time }
-    }
     
     // Metodi di supporto e data class Point omessi
 }

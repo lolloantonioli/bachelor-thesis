@@ -224,10 +224,7 @@ Per stimare la qualità dei collegamenti, l'esperimento associa a ogni coppia di
 Gli approcci confrontati nell'esperimento precedente sono quattro:
 \begin{itemize}
     \item \emph{Baseline non cooperativa}: rappresenta lo stato dell'arte di riferimento. Ogni nave tenta di comunicare direttamente con una stazione a terra utilizzando la tecnologia più favorevole tra quelle disponibili. Se il collegamento diretto offre un data rate sufficiente a trasmettere il flusso $d$, la comunicazione viene considerata riuscita; in caso contrario, il flusso viene scartato~\cite{11217861}. Questo approccio non prevede alcuna collaborazione tra imbarcazioni.
-
     \item \emph{\ac{Dist-MR}}: ogni nave che non riesce a raggiungere direttamente la stazione a terra seleziona come relay un'imbarcazione vicina lungo il cammino geograficamente più breve verso la destinazione. Si ha quindi un insieme di alberi che originano nelle stazioni a terra. La metrica usata per la scelta del relay è la distanza geografica~\cite{11217861}.
-
     \item \emph{\ac{DR-MR}}: modifica il criterio di scelta del relay utilizzato in \ac{Dist-MR}. Invece di minimizzare la distanza geografica, l'obiettivo è selezionare il percorso che massimizza il data rate disponibile verso la stazione a terra~\cite{11217861}.
-
     \item \emph{\ac{CSC}}: organizza le imbarcazioni in cluster auto-organizzanti, la cui logica è implementata sfruttando la programmazione aggregata tramite il \ac{DSL} Collektive. Ogni cluster possiede un leader, responsabile della raccolta dei flussi dati prodotti dai membri della regione e della loro successiva sintesi prima dell'invio verso terra o verso un altro cluster. Questo approccio si basa sul pattern \ac{SCR}: i leader vengono eletti dinamicamente e la formazione dei cluster tiene conto della capacità di trasmettere dati verso il leader~\cite{11217861}.
 \end{itemize}
