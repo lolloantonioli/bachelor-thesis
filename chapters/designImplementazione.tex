@@ -96,6 +96,11 @@ L'azione funziona nel seguente modo:
 
 \newpage
 
+\subsection{Integrazione dei dati AIS in Alchemist}
+\label{sec:integrazione_dati_AIS_alchemist}
+
+Sebbene per l'esecuzione di questo esperimento ci si sia avvalsi della struttura basata sul pre-processamento dei file \ac{GPX}, il lavoro di tesi si è spinto oltre per superare questo limite strutturale. Ho introdotto il supporto nativo per i dati \ac{AIS} nel simulatore Alchemist, visionabile a questo link\footnote{\url{https://github.com/AlchemistSimulator/Alchemist/tree/master/alchemist-maps}}. I dati \ac{AIS} vengono ora integrati attraverso un loader dedicato (\texttt{AISTraceLoader}) che consente il caricamento di file NMEA e \ac{AIS}. Il codice estrae diverse informazioni dai messaggi decodificati, includendo i dati presenti nella \cref{tab:struttura_ais}. Questa integrazione permette di rappresentare ciascuna nave come un'entità indipendente tramite la proprietà di nodo \texttt{AISVessel}.
+
 \section{Modifiche all’algoritmo}
 \label{sec:modifiche_algoritmo}
 
